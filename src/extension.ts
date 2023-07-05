@@ -18,7 +18,21 @@ export function activate(context: vscode.ExtensionContext) {
 		// Display a message box to the user
 		vscode.window.showInformationMessage('Hello World from myext!');
 	});
+	context.subscriptions.push(disposable);
 
+	disposable = vscode.commands.registerCommand('myext.larry', () => {
+		vscode.window.showInformationMessage('Hello World from Larry!');
+	});
+	context.subscriptions.push(disposable);
+
+	disposable = vscode.commands.registerCommand('myext.curly', () => {
+		vscode.window.showInformationMessage('Hello World from Curly!');
+	});
+	context.subscriptions.push(disposable);
+
+	disposable = vscode.commands.registerCommand('myext.moe', () => {
+		vscode.window.showInformationMessage('Hello World from Moe!');
+	});
 	context.subscriptions.push(disposable);
 }
 

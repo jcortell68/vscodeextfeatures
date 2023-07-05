@@ -16,8 +16,95 @@
       {
         "command": "myext.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "myext.larry",
+        "title": "Larry"
+      },
+      {
+        "command": "myext.curly",
+        "title": "Curly"
+      },
+      {
+        "command": "myext.moe",
+        "title": "Moe"
       }
-    ]
+    ],
+    "submenus": [
+      {
+        "id": "myext.stooges",
+        "label": "Three Stooges",
+				"icon": "resources/someicon.svg"
+      }
+    ],
+    "menus": {
+      "editor/title/run": [
+        {
+          "submenu": "myext.stooges",
+          "group": "navigation"
+        },
+        {
+          "command": "myext.helloWorld",
+          "group": "navigation"
+        }
+      ],
+      "editor/title": [
+        {
+          "submenu": "myext.stooges",
+          "group": "navigation"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "submenu": "myext.stooges",
+          "group": "navigation"
+        }
+      ],
+      "editor/context": [
+        {
+          "submenu": "myext.stooges",
+          "group": "navigation"
+        }
+      ],
+      "editor/lineNumber/context": [
+        {
+          "submenu": "myext.stooges",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "submenu": "myext.stooges",
+          "group": "navigation"
+        }
+      ],
+      "view/title": [
+        {
+          "submenu": "myext.stooges",
+          "group": "navigation"
+        }
+      ],
+      "explorer/context": [
+        {
+          "submenu": "myext.stooges",
+          "group": "navigation"
+        }
+      ],
+      "myext.stooges": [
+        {
+          "command": "myext.larry",
+          "group": "navigation"
+        },
+        {
+          "command": "myext.curly",
+          "group": "navigation"
+        },
+        {
+          "command": "myext.moe",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "yarn run package",
