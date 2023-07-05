@@ -1,0 +1,6 @@
+dist
+node_modules
+.browser_modules
+lib
+*.log
+out
