@@ -15,9 +15,68 @@
     "commands": [
       {
         "command": "myext.helloWorld",
+        "icon": "resources/someicon.svg",
         "title": "Hello World"
+      },
+      {
+        "command": "myext.goodbyeWorld",
+        "title": "Goodbye World"
       }
-    ]
+    ],
+    "menus": {
+      "editor/title/run": [
+        {
+          "command": "myext.helloWorld",
+          "group": "navigation"
+        },
+        {
+          "command": "myext.goodbyeWorld",
+          "group": "navigation"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "myext.helloWorld",
+          "group": "navigation"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "command": "myext.helloWorld",
+          "group": "navigation"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "myext.helloWorld",
+          "group": "navigation"
+        }
+      ],
+      "editor/lineNumber/context": [
+        {
+          "command": "myext.helloWorld",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "myext.helloWorld",
+          "group": "navigation"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "myext.helloWorld",
+          "group": "navigation"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "myext.helloWorld",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "yarn run package",

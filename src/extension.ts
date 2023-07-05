@@ -18,8 +18,15 @@ export function activate(context: vscode.ExtensionContext) {
 		// Display a message box to the user
 		vscode.window.showInformationMessage('Hello World from myext!');
 	});
-
 	context.subscriptions.push(disposable);
+
+	disposable = vscode.commands.registerCommand('myext.goodbyeWorld', () => {
+		// The code you place here will be executed every time your command is executed
+		// Display a message box to the user
+		vscode.window.showInformationMessage('Goodbye World from myext!');
+	});
+	context.subscriptions.push(disposable);
+
 }
 
 // This method is called when your extension is deactivated
