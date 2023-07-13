@@ -23,6 +23,14 @@
         "title": "Goodbye World"
       }
     ],
+    "views": {
+      "explorer": [
+        {
+          "id": "myext.view",
+          "name": "Hello World View"
+        }
+      ]
+    },
     "menus": {
       "editor/title/run": [
         {
