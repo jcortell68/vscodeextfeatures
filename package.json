@@ -12,6 +12,17 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
+		"colors": [
+			{
+				"id": "myext.mycolor",
+				"description": "Color contributed by my VS Code extensions",
+				"defaults": {
+					"dark": "#FFDD0055",
+					"light": "#FFDD0055",
+					"highContrast": "#FFDD0055"
+				}
+			}
+		],
     "commands": [
       {
         "command": "myext.helloWorld",
