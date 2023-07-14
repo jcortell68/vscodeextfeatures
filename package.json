@@ -17,6 +17,18 @@
         "command": "myext.helloWorld",
         "title": "Hello World"
       }
+    ],
+    "customEditors": [
+      {
+        "viewType": "myext.myeditor",
+        "displayName": "My JSON Editor",
+        "selector": [
+          {
+            "filenamePattern": "*.json"
+          }
+        ],
+        "priority": "option"
+      }
     ]
   },
   "scripts": {
