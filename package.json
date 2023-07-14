@@ -17,7 +17,24 @@
         "command": "myext.helloWorld",
         "title": "Hello World"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "My extension's settings",
+      "properties": {
+        "some.setting": {
+          "type": "boolean",
+          "default": "false",
+          "description": "I'm sure this setting controls something useful"
+        },
+        "another.setting": {
+          "type": "number",
+          "default": "false",
+          "description": "This setting I'm not so sure about."
+        }
+
+      }
+    }
+
   },
   "scripts": {
     "vscode:prepublish": "yarn run package",
