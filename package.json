@@ -20,10 +20,19 @@
       }
     ],
     "views": {
-      "explorer": [
+      "myextviewscontainer": [
         {
           "id": "myext.view",
           "name": "Hello World View"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "myextviewscontainer",
+          "title": "My Views Container",
+          "icon": "resources/someicon.svg"
         }
       ]
     },
