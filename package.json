@@ -34,7 +34,13 @@
           "group": "navigation"
         }
       ]
-    }
+    },
+    "viewsWelcome": [
+      {
+        "view": "myext.view",
+        "contents": "This is my custom view. It has a TreeView but currently the tree has no content.\n[Say Hello](command:myext.helloWorld)\nThis content brought to you by a viewsWelcome, [see more here](https://code.visualstudio.com/api/references/contribution-points#contributes.viewsWelcome)."
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "yarn run package",
