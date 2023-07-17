@@ -17,6 +17,11 @@
         "command": "myext.helloWorld",
         "title": "Hello World"
       }
+    ],
+    "taskDefinitions": [
+      {
+        "type": "mytasktype"
+      }
     ]
   },
   "scripts": {
