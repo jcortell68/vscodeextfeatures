@@ -17,6 +17,12 @@
         "command": "myext.helloWorld",
         "title": "Hello World"
       }
+    ],
+    "keybindings": [
+      {
+        "command": "myext.helloWorld",
+        "key": "ctrl+f1"
+      }
     ]
   },
   "scripts": {
