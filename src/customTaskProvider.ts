@@ -4,10 +4,9 @@ class CustomTaskTerminal implements vscode.Pseudoterminal {
 	private writeEmitter = new vscode.EventEmitter<string>();
 	onDidWrite: vscode.Event<string> = this.writeEmitter.event;
 	open(initialDimensions: vscode.TerminalDimensions | undefined): void {
-		throw new Error('Method not implemented.');
+		this.writeEmitter.fire("This is some example output\n\r");
 	}
 	close(): void {
-		throw new Error('Method not implemented.');
 	}
 }
 
