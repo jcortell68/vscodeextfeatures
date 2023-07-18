@@ -1,0 +1,8 @@
+{
+  "iconDefinitions": {
+    "myfolder": {
+      "iconPath": "../resources/folder.svg"
+    }
+  },
+  "folder": "myfolder"
+}

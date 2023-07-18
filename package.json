@@ -17,6 +17,14 @@
         "command": "myext.helloWorld",
         "title": "Hello World"
       }
+    ],
+    "iconThemes": [
+      {
+        "id": "symbols",
+        "label": "My File Icon Theme",
+        "path": "./src/file-icon-theme.json",
+        "_watch": true
+      }
     ]
   },
   "scripts": {
