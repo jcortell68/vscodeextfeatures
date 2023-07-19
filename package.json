@@ -17,7 +17,18 @@
         "command": "myext.helloWorld",
         "title": "Hello World"
       }
-    ]
+    ],
+    "colors": [
+			{
+				"id": "myext.mybluecolor",
+				"description": "Color contributed by my VS Code extensions",
+				"defaults": {
+					"dark": "#00FFFF",
+					"light": "#00FFFF",
+					"highContrast": "#00FFFF"
+				}
+			}
+		]
   },
   "scripts": {
     "vscode:prepublish": "yarn run package",

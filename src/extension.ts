@@ -4,7 +4,7 @@ import * as vscode from 'vscode';
 
 // Decoration stuff inspired by https://vscode.rocks/decorations/
 const decorationType = vscode.window.createTextEditorDecorationType({
-	backgroundColor: 'green',
+	backgroundColor: new vscode.ThemeColor('myext.mybluecolor'),
 	border: '2px solid white',
 });
 
