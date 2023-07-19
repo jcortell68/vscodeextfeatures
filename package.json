@@ -17,7 +17,15 @@
         "command": "myext.helloWorld",
         "title": "Hello World"
       }
-    ]
+    ],
+    "terminal": {
+      "profiles": [
+        {
+          "title": "Profile from my extension",
+          "id": "myext.terminal-profile"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "yarn run package",

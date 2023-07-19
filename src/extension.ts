@@ -20,6 +20,21 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push(disposable);
+
+	class MyTerminalOptions implements vscode.TerminalOptions {
+		name = "My kind of terminal";
+		shellPath = "cmd";
+		cwd = "c:\\users";
+	}
+
+	class MyTerminalProfileProvider implements vscode.TerminalProfileProvider {
+		provideTerminalProfile(token: vscode.CancellationToken): vscode.ProviderResult<vscode.TerminalProfile> {
+			return new vscode.TerminalProfile(new MyTerminalOptions);
+		}
+
+	};
+
+	vscode.window.registerTerminalProfileProvider('myext.terminal-profile', new MyTerminalProfileProvider());
 }
 
 // This method is called when your extension is deactivated
