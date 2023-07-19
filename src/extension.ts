@@ -2,6 +2,31 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 
+// Decoration stuff inspired by https://vscode.rocks/decorations/
+const decorationType = vscode.window.createTextEditorDecorationType({
+	backgroundColor: 'green',
+	border: '2px solid white',
+});
+
+function decorate(editor: vscode.TextEditor) {
+	const sourceCode = editor.document.getText();
+	const regex = /(console\.log)/;
+	const decorations: vscode.DecorationOptions[] = [];
+	const lines = sourceCode.split('\n');
+	for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+	  const match = lines[lineIndex].match(regex);
+	  if (match !== null && match.index !== undefined) {
+		const range = new vscode.Range(
+		  new vscode.Position(lineIndex, match.index),
+		  new vscode.Position(lineIndex, match.index + match[1].length)
+		);
+
+		decorations.push({range});
+	  }
+	}
+	editor.setDecorations(decorationType, decorations);
+}
+
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -20,6 +45,13 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push(disposable);
+
+	vscode.workspace.onWillSaveTextDocument(event => {
+		const openEditor = vscode.window.visibleTextEditors.filter(
+		  editor => editor.document.uri === event.document.uri
+		)[0];
+		decorate(openEditor);
+	});
 }
 
 // This method is called when your extension is deactivated
