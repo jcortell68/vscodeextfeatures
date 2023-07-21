@@ -12,6 +12,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 	let panel: vscode.WebviewPanel | undefined = undefined;
 
+	let changeStateCount: number = 0;
+
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
@@ -33,14 +35,14 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 
 		// Show some initial conent
-		panel.webview.html = getWebviewContent("Hi!");
+		panel.webview.html = getWebviewContent("Hi!", changeStateCount);
 
 		// Schedule updates to the content every second
 		let iteration = 0;
       	const updateWebview = () => {
 			if (panel) {
 				const msg = (iteration++ % 2 === 0) ? 'It\'s Friday' : 'Or is it?';
-				panel.webview.html = getWebviewContent(msg);
+				panel.webview.html = getWebviewContent(msg, changeStateCount);
 			}
 		};
 		const interval = setInterval(updateWebview, 1000);
@@ -53,6 +55,15 @@ export function activate(context: vscode.ExtensionContext) {
 				// When the panel is closed, cancel any future updates to the webview content
 				clearInterval(interval);
 				panel = undefined;
+				changeStateCount = 0;
+			},
+			null,
+			context.subscriptions
+		);
+
+		panel.onDidChangeViewState(
+			() => {
+				changeStateCount++;
 			},
 			null,
 			context.subscriptions
@@ -66,7 +77,7 @@ export function activate(context: vscode.ExtensionContext) {
 // This method is called when your extension is deactivated
 export function deactivate() {}
 
-function getWebviewContent(msg: string) {
+function getWebviewContent(msg: string, changeStateCount: number) {
 	return `
 	<!DOCTYPE html>
 	<html lang="en">
@@ -77,6 +88,7 @@ function getWebviewContent(msg: string) {
 	</head>
 	<body>
 		<h1>${msg}</h1>
+		<h2>There have been ${changeStateCount} state changes</h2>
 	</body>
 	</html>`;
 }
