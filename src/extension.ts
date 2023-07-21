@@ -10,6 +10,8 @@ export function activate(context: vscode.ExtensionContext) {
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "myext" is now active. VS Code version = ' + vscode.version);
 
+	let panel: vscode.WebviewPanel | undefined = undefined;
+
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
@@ -17,12 +19,18 @@ export function activate(context: vscode.ExtensionContext) {
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
 
-		const panel = vscode.window.createWebviewPanel(
-			'myextWebviewPanelType', // Identifies the type of the webview. Used internally
-			'My Webview Panel', // Title of the panel displayed to the user
-			vscode.ViewColumn.One, // Editor column to show the new webview panel in.
-			{} // Webview options. More on these later.
-		);
+		const editorColumn = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined;
+
+		if (panel) {
+			panel.reveal(editorColumn);
+		} else {
+			panel = vscode.window.createWebviewPanel(
+				'myextWebviewPanelType', // Identifies the type of the webview. Used internally
+				'My Webview Panel', // Title of the panel displayed to the user
+				editorColumn ? editorColumn : vscode.ViewColumn.One,
+				{} // Webview options. More on these later.
+			);
+		}
 
 		// Show some initial conent
 		panel.webview.html = getWebviewContent("Hi!");
@@ -30,8 +38,10 @@ export function activate(context: vscode.ExtensionContext) {
 		// Schedule updates to the content every second
 		let iteration = 0;
       	const updateWebview = () => {
-			const msg = (iteration++ % 2 === 0) ? 'It\'s Friday' : 'Or is it?';
-			panel.webview.html = getWebviewContent(msg);
+			if (panel) {
+				const msg = (iteration++ % 2 === 0) ? 'It\'s Friday' : 'Or is it?';
+				panel.webview.html = getWebviewContent(msg);
+			}
 		};
 		const interval = setInterval(updateWebview, 1000);
 
@@ -42,6 +52,7 @@ export function activate(context: vscode.ExtensionContext) {
 			() => {
 				// When the panel is closed, cancel any future updates to the webview content
 				clearInterval(interval);
+				panel = undefined;
 			},
 			null,
 			context.subscriptions
