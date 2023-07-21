@@ -35,11 +35,17 @@ export function activate(context: vscode.ExtensionContext) {
 		};
 		const interval = setInterval(updateWebview, 1000);
 
-		// Stop updating the  webview content if the panel is closed (by the user)
+		// After 5sec, programmatically close the webview panel
+		const timeout = setTimeout(() => panel.dispose(), 5000);
+
+		// Stop updating the  webview content if the panel is closed. Otherwise
+		// the code will experience an exception every second until the app
+		// is closed
 		panel.onDidDispose(
 			() => {
 				// When the panel is closed, cancel any future updates to the webview content
 				clearInterval(interval);
+				clearTimeout(timeout);
 			},
 			null,
 			context.subscriptions
