@@ -33,8 +33,19 @@ export function activate(context: vscode.ExtensionContext) {
 			const msg = (iteration++ % 2 === 0) ? 'It\'s Friday' : 'Or is it?';
 			panel.webview.html = getWebviewContent(msg);
 		};
-		setInterval(updateWebview, 1000);
+		const interval = setInterval(updateWebview, 1000);
+
+		// Stop updating the  webview content if the panel is closed (by the user)
+		panel.onDidDispose(
+			() => {
+				// When the panel is closed, cancel any future updates to the webview content
+				clearInterval(interval);
+			},
+			null,
+			context.subscriptions
+		);
 	});
+
 
 	context.subscriptions.push(disposable);
 }
