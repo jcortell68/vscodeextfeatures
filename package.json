@@ -16,8 +16,21 @@
       {
         "command": "myext.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "myext.webview",
+        "title": "Open Webview"
       }
-    ]
+    ],
+
+    "menus": {
+      "webview/context": [
+        {
+        "command": "myext.helloWorld"
+
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "yarn run package",
