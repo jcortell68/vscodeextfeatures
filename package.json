@@ -20,6 +20,14 @@
       {
         "command": "myext.webview",
         "title": "Open Webview"
+      },
+      {
+        "command": "myext.laugh",
+        "title": "Laugh"
+      },
+      {
+        "command": "myext.cry",
+        "title": "Cry"
       }
     ],
 
@@ -28,6 +36,14 @@
         {
         "command": "myext.helloWorld"
 
+        },
+        {
+          "command": "myext.laugh",
+          "when": "webviewSection == 'this'"
+        },
+        {
+          "command": "myext.cry",
+          "when": "webviewSection == 'that'"
         }
       ]
     }

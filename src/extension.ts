@@ -84,6 +84,18 @@ export function activate(context: vscode.ExtensionContext) {
 	disposable = vscode.commands.registerCommand('myext.helloWorld', () => {
 		vscode.window.showInformationMessage("Hello World from VS Code extension");
 	});
+	context.subscriptions.push(disposable);
+
+	disposable = vscode.commands.registerCommand('myext.laugh', () => {
+		vscode.window.showInformationMessage("Laughing from VS Code extension");
+	});
+	context.subscriptions.push(disposable);
+
+	disposable = vscode.commands.registerCommand('myext.cry', () => {
+		vscode.window.showInformationMessage("Crying from VS Code extension");
+	});
+	context.subscriptions.push(disposable);
+
 }
 
 // This method is called when your extension is deactivated
@@ -123,6 +135,12 @@ function getWebviewContent(msg: string, changeStateCount: number, img: vscode.Ur
 		</ul>
 		Hit CTRL-K + CTRL-T to change the theme
 		</p>
+
+		<div class="main" data-vscode-context='{"webviewSection": "this", "mouseCount": 4}'>
+		<h1>ABC</h1>
+
+		<textarea data-vscode-context='{"webviewSection": "that", "preventDefaultContextMenuItems": true}'></textarea>
+	  </div>
 	</body>
 	</html>`;
 }
