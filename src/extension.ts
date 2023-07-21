@@ -15,8 +15,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 	let panel: vscode.WebviewPanel | undefined = undefined;
 
-	let changeStateCount: number = 0;
-
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
@@ -34,7 +32,9 @@ export function activate(context: vscode.ExtensionContext) {
 				'myextWebviewPanelType', // Identifies the type of the webview. Used internally
 				'My Webview Panel', // Title of the panel displayed to the user
 				editorColumn ? editorColumn : vscode.ViewColumn.One,
-				{} // Webview options. More on these later.
+				{
+					enableScripts: true  // we want javascript in our webview
+				}
 			);
 		}
 
@@ -44,35 +44,14 @@ export function activate(context: vscode.ExtensionContext) {
 		const imgWebviewUri = panel.webview.asWebviewUri(imgLocalUri);
 
 		// Show some initial conent
-		panel.webview.html = getWebviewContent("Hi!", changeStateCount, imgWebviewUri);
-
-		// Schedule updates to the content every second
-		let iteration = 0;
-      	const updateWebview = () => {
-			if (panel) {
-				const msg = (iteration++ % 2 === 0) ? 'It\'s Friday' : 'Or is it?';
-				panel.webview.html = getWebviewContent(msg, changeStateCount, imgWebviewUri);
-			}
-		};
-		const interval = setInterval(updateWebview, 1000);
+		panel.webview.html = getWebviewContent("Hi!", imgWebviewUri);
 
 		// Stop updating the  webview content if the panel is closed. Otherwise
 		// the code will experience an exception every second until the app
 		// is closed
 		panel.onDidDispose(
 			() => {
-				// When the panel is closed, cancel any future updates to the webview content
-				clearInterval(interval);
 				panel = undefined;
-				changeStateCount = 0;
-			},
-			null,
-			context.subscriptions
-		);
-
-		panel.onDidChangeViewState(
-			() => {
-				changeStateCount++;
 			},
 			null,
 			context.subscriptions
@@ -101,7 +80,7 @@ export function activate(context: vscode.ExtensionContext) {
 // This method is called when your extension is deactivated
 export function deactivate() {}
 
-function getWebviewContent(msg: string, changeStateCount: number, img: vscode.Uri) {
+function getWebviewContent(msg: string, img: vscode.Uri) {
 	return `
 	<!DOCTYPE html>
 	<html lang="en">
@@ -125,7 +104,6 @@ function getWebviewContent(msg: string, changeStateCount: number, img: vscode.Ur
 	</head>
 	<body>
 		<h1>${msg}</h1>
-		<h2>There have been ${changeStateCount} state changes</h2>
 		<img src="${img}"/>
 		<p>The webview HTML content includes internal CSS that will set the text color as follows:
 		<ul>
@@ -140,6 +118,15 @@ function getWebviewContent(msg: string, changeStateCount: number, img: vscode.Ur
 		<h1>ABC</h1>
 
 		<textarea data-vscode-context='{"webviewSection": "that", "preventDefaultContextMenuItems": true}'></textarea>
+
+		<h1 id="lines-of-code-counter">0</h1>
+		<script>
+			const counter = document.getElementById('lines-of-code-counter');
+			let count = 0;
+			setInterval(() => {
+				counter.textContent = "This line is being updated by javascript in the Webview HTML: " + count++;
+			}, 100);
+    	</script>
 	  </div>
 	</body>
 	</html>`;
