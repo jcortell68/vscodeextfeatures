@@ -115,7 +115,14 @@ function getWebviewContent(msg: string, changeStateCount: number, img: vscode.Ur
 		<h1>${msg}</h1>
 		<h2>There have been ${changeStateCount} state changes</h2>
 		<img src="${img}"/>
-		<p>The text in this webview will change based on the active color theme in the Theia app<p>
+		<p>The webview HTML content includes internal CSS that will set the text color as follows:
+		<ul>
+		<li>light-theme: red</li>
+		<li>dark-theme: yellow</li>
+		<li>high-contrast: blue</li>
+		</ul>
+		Hit CTRL-K + CTRL-T to change the theme
+		</p>
 	</body>
 	</html>`;
 }
