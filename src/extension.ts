@@ -56,6 +56,14 @@ export function activate(context: vscode.ExtensionContext) {
 			null,
 			context.subscriptions
 		);
+
+		panel.webview.onDidReceiveMessage(message => {
+			switch (message.command) {
+				case 'alert':
+					vscode.window.showInformationMessage('Rounds = ' + message.roundVal);
+			}
+		});
+
 	});
 
 	context.subscriptions.push(disposable);
@@ -128,11 +136,20 @@ function getWebviewContent(msg: string, img: vscode.Uri) {
 		<textarea data-vscode-context='{"webviewSection": "that", "preventDefaultContextMenuItems": true}'></textarea>
 
 		<h1 id="lines-of-code-counter">0</h1>
+		<h1 id="rounds">0</h1>
 		<script>
 			const counter = document.getElementById('lines-of-code-counter');
+			const vscode = acquireVsCodeApi();
 			let count = 0;
+			let rounds = 0; // A round is a sequence of 10
 			setInterval(() => {
-				counter.textContent = "This line is being updated by javascript in the Webview HTML: " + count++;
+				counter.textContent = "This line is being updated by javascript in the Webview HTML: " + count;
+				// Somehow we can use bit inversion (~) to strip the decimal part of the number. Not sure how but it seems to work.
+				if ((~~(count/10)) != rounds) {
+					rounds = ~~(count/10);
+					vscode.postMessage({command: 'alert', roundVal: rounds});
+				}
+				count++;
 			}, 100);
 			window.addEventListener('message', event => {
 				const message = event.data;  // The JSON data our extension sent
