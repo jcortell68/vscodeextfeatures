@@ -28,6 +28,10 @@
       {
         "command": "myext.cry",
         "title": "Cry"
+      },
+      {
+        "command": "myext.doublecount",
+        "title": "Double Count"
       }
     ],
 

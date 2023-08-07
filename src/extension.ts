@@ -75,6 +75,14 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 	context.subscriptions.push(disposable);
 
+	disposable = vscode.commands.registerCommand('myext.doublecount', () => {
+		if (panel) {
+			// Send a message to our webview.
+			// You can send any JSON serializable data.
+			panel.webview.postMessage({ command: 'doReset' });
+		}
+	});
+	context.subscriptions.push(disposable);
 }
 
 // This method is called when your extension is deactivated
@@ -126,6 +134,14 @@ function getWebviewContent(msg: string, img: vscode.Uri) {
 			setInterval(() => {
 				counter.textContent = "This line is being updated by javascript in the Webview HTML: " + count++;
 			}, 100);
+			window.addEventListener('message', event => {
+				const message = event.data;  // The JSON data our extension sent
+				switch (message.command) {
+					case 'doReset':
+						count *= 2;
+						break;
+				}
+			});
     	</script>
 	  </div>
 	</body>
