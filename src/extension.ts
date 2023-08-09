@@ -15,6 +15,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 	let panel: vscode.WebviewPanel | undefined = undefined;
 
+	let workerWebviewUri : vscode.Uri;
+
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
@@ -43,8 +45,13 @@ export function activate(context: vscode.ExtensionContext) {
 		const imgLocalUri = vscode.Uri.joinPath(context.extensionUri, 'resources', 'bnb.png');
 		const imgWebviewUri = panel.webview.asWebviewUri(imgLocalUri);
 
+		// We want our webview to launch a webworker, the code for which is a javascript
+		// file distributed in the extension. So same process as above.
+		const workerLocalUri = vscode.Uri.joinPath(context.extensionUri, 'src', 'webworker.js');
+		workerWebviewUri = panel.webview.asWebviewUri(workerLocalUri);
+
 		// Show some initial conent
-		panel.webview.html = getWebviewContent("Hi!", imgWebviewUri);
+		panel.webview.html = getWebviewContent("Hi!", imgWebviewUri, workerWebviewUri);
 
 		// Stop updating the  webview content if the panel is closed. Otherwise
 		// the code will experience an exception every second until the app
@@ -96,7 +103,7 @@ export function activate(context: vscode.ExtensionContext) {
 // This method is called when your extension is deactivated
 export function deactivate() {}
 
-function getWebviewContent(msg: string, img: vscode.Uri) {
+function getWebviewContent(msg: string, img: vscode.Uri, workerUri: vscode.Uri) {
 	return `
 	<!DOCTYPE html>
 	<html lang="en">
@@ -136,9 +143,12 @@ function getWebviewContent(msg: string, img: vscode.Uri) {
 		<textarea data-vscode-context='{"webviewSection": "that", "preventDefaultContextMenuItems": true}'></textarea>
 
 		<h1 id="lines-of-code-counter">0</h1>
-		<h1 id="rounds">0</h1>
+		<hr>
+		<h1>This is the content of webworker.js</h1>
+		<p id="somemessage">placeholder</p>
 		<script>
 			const counter = document.getElementById('lines-of-code-counter');
+			const somemessage = document.getElementById('somemessage');
 			const vscode = acquireVsCodeApi();
 			let count = 0;
 			let rounds = 0; // A round is a sequence of 10
@@ -159,6 +169,16 @@ function getWebviewContent(msg: string, img: vscode.Uri) {
 						break;
 				}
 			});
+
+			// Eventually we'll instantiate a Worker. For now, just dump the contents
+			// of the worker js file as proof that we're able to fetch the file
+			// and get its contents
+			const workerSource = "${workerUri}";  // This is something like: https://file%2B.vscode-resource.vscode-cdn.net/c%3A/j.cortell/git/vscodeextfeatures/src/webworker.js
+			fetch(workerSource)
+				.then(result => result.blob())
+				.then(blob => new Response(blob).text())
+				.then(text => { somemessage.textContent = text } )
+				.catch(error => {somemessage.textContent = 'did not get it! ' + error})
     	</script>
 	  </div>
 	</body>
