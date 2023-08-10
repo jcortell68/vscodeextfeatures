@@ -9,7 +9,7 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": ["onWebviewPanel:myextWebviewPanelType"],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
