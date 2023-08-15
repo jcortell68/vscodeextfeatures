@@ -23,8 +23,22 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable);
 
 	class MyCustomTextEditorProvider implements CustomTextEditorProvider {
+
 		resolveCustomTextEditor(document: vscode.TextDocument, webviewPanel: vscode.WebviewPanel, token: vscode.CancellationToken): void | Thenable<void> {
+			webviewPanel.webview.options = {
+				enableScripts: true,
+			};
 			webviewPanel.webview.html = getWebviewContent(document.getText());
+			webviewPanel.webview.onDidReceiveMessage(message => {
+				switch(message.cmd) {
+					case 'addText':
+						const lastLine = document.lineAt(document.lineCount-1);
+						const range = new vscode.Range(lastLine.range.start, lastLine.range.end)
+						let edit = new vscode.WorkspaceEdit();
+						edit.insert(document.uri, range.end, "\nsome-new-text");
+						vscode.workspace.applyEdit(edit);
+				}
+			});
 		}
 	};
 
@@ -45,7 +59,14 @@ function getWebviewContent(docContent: string): string {
 	<body>
 		<h1>My Custom Editor</h1>
 		<p>${docContent}</p>
+	<button type="button" onclick="addText()">Add text</button>
 	</body>
+	<script>
+	const vscode = acquireVsCodeApi()
+	function addText() {
+		vscode.postMessage({cmd: 'addText'});
+	}
+	</script>
 	</html>`;
 }
 
