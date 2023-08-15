@@ -21,13 +21,13 @@
     "customEditors": [
       {
         "viewType": "myext.myeditor",
-        "displayName": "My JSON Editor",
+        "displayName": "My Custom Editor",
         "selector": [
           {
-            "filenamePattern": "*.json"
+            "filenamePattern": "*.mce"
           }
         ],
-        "priority": "option"
+        "priority": "default"
       }
     ]
   },

@@ -1,6 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import { CustomTextEditorProvider } from 'vscode';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -20,6 +21,32 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push(disposable);
+
+	class MyCustomTextEditorProvider implements CustomTextEditorProvider {
+		resolveCustomTextEditor(document: vscode.TextDocument, webviewPanel: vscode.WebviewPanel, token: vscode.CancellationToken): void | Thenable<void> {
+			webviewPanel.webview.html = getWebviewContent();
+		}
+	};
+
+	let editorProvider : MyCustomTextEditorProvider = new MyCustomTextEditorProvider();
+
+	vscode.window.registerCustomEditorProvider('myext.myeditor', editorProvider);
+}
+
+function getWebviewContent(): string {
+	return `
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Some Title</title>
+	</head>
+	<body>
+		<h1>My Custom Editor</h1>
+		<p>Nothing to see here...yet</p>
+	</body>
+	</html>`;
 }
 
 // This method is called when your extension is deactivated
