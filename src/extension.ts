@@ -24,7 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	class MyCustomTextEditorProvider implements CustomTextEditorProvider {
 		resolveCustomTextEditor(document: vscode.TextDocument, webviewPanel: vscode.WebviewPanel, token: vscode.CancellationToken): void | Thenable<void> {
-			webviewPanel.webview.html = getWebviewContent();
+			webviewPanel.webview.html = getWebviewContent(document.getText());
 		}
 	};
 
@@ -33,7 +33,7 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.window.registerCustomEditorProvider('myext.myeditor', editorProvider);
 }
 
-function getWebviewContent(): string {
+function getWebviewContent(docContent: string): string {
 	return `
 	<!DOCTYPE html>
 	<html lang="en">
@@ -44,7 +44,7 @@ function getWebviewContent(): string {
 	</head>
 	<body>
 		<h1>My Custom Editor</h1>
-		<p>Nothing to see here...yet</p>
+		<p>${docContent}</p>
 	</body>
 	</html>`;
 }
