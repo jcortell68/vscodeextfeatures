@@ -17,7 +17,25 @@
         "command": "myext.helloWorld",
         "title": "Hello World"
       }
-    ]
+    ],
+    "views": {
+      "myext_myViewContainer": [
+        {
+          "type": "webview",
+          "id": "myext_myView",
+          "name": "My Webview"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "panel": [
+        {
+          "id": "myext_myViewContainer",
+          "title": "My Webview Container",
+          "icon": "resources/someicon.svg"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "yarn run package",

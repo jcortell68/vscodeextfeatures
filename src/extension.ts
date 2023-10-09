@@ -20,7 +20,42 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push(disposable);
+
+    disposable = vscode.window.registerWebviewViewProvider('myext_myView', new MyWebviewViewProvider(context.extensionUri));
+    context.subscriptions.push(disposable);
 }
 
 // This method is called when your extension is deactivated
 export function deactivate() {}
+
+class MyWebviewViewProvider implements vscode.WebviewViewProvider {
+    constructor(private readonly _extensionUri: vscode.Uri) {
+	}
+
+    resolveWebviewView(
+        webviewView: vscode.WebviewView,
+        context: vscode.WebviewViewResolveContext<unknown>,
+        token: vscode.CancellationToken
+    ): void | Thenable<void> {
+        webviewView.webview.options = {
+            // Allow scripts in the webview
+            enableScripts: true,
+
+            localResourceRoots: [this._extensionUri]
+        };
+
+        webviewView.webview.html = this.getHtmlForWebview();
+    }
+
+    private getHtmlForWebview() {
+        return `<!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <title>Title</title>
+            </head>
+            <body>
+                <h1>Hello World!</h1>
+            </body>
+            </html>`;
+    }
+}
