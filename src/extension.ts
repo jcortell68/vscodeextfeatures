@@ -56,6 +56,13 @@ class MyWebviewViewProvider implements vscode.WebviewViewProvider {
             <body>
                 <h1>Hello World!</h1>
             </body>
+            <button>I'm a button</button>
+            <p>
+            <button id='my_button'>I'm another button</button>
+            <script>
+                elem = document.getElementById('my_button');
+                elem.textContent = "This button's label set by JavaScript embedded in the HTML";
+            </script>
             </html>`;
     }
 }
