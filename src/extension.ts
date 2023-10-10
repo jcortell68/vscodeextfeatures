@@ -44,10 +44,11 @@ class MyWebviewViewProvider implements vscode.WebviewViewProvider {
             localResourceRoots: [this._extensionUri]
         };
 
-        webviewView.webview.html = this.getHtmlForWebview();
+        webviewView.webview.html = this.getHtmlForWebview(webviewView.webview);
     }
 
-    private getHtmlForWebview() {
+    private getHtmlForWebview(webview: vscode.Webview) {
+        const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'webview', 'main.js'));
         return `<!DOCTYPE html>
             <html lang="en">
             <head>
@@ -59,10 +60,7 @@ class MyWebviewViewProvider implements vscode.WebviewViewProvider {
             <button>I'm a button</button>
             <p>
             <button id='my_button'>I'm another button</button>
-            <script>
-                elem = document.getElementById('my_button');
-                elem.textContent = "This button's label set by JavaScript embedded in the HTML";
-            </script>
+            <script src="${scriptUri}"/>
             </html>`;
     }
 }
