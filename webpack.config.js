@@ -45,4 +45,49 @@ const extensionConfig = {
     level: "log", // enables logging required for problem matchers
   },
 };
-module.exports = [ extensionConfig ];
+
+
+/**
+ * @param { WebpackConfig['entry'] } entry
+ */
+function getWebviewConfig(entry) {
+	const basePath = path.join(__dirname, 'webviews');
+	return {
+		name: 'webviews',
+		entry: entry,
+    mode: 'none', // this leaves the source code as close as possible to the original (when packaging we set this to 'production')
+		target: 'web',
+		devtool: 'source-map',
+		output: {
+			filename: '[name].js',
+			path: path.resolve(__dirname, 'dist'),
+		},
+		module: {
+			rules: [
+				{
+					exclude: /node_modules/,
+					include: [basePath, path.join(__dirname, 'src')],
+					test: /\.tsx?$/,
+					use: {
+            loader: 'ts-loader',
+            options: {
+              configFile: path.join(__dirname, 'tsconfig.webviews.json'),
+              experimentalWatchApi: true,
+              transpileOnly: true,
+            },
+          },
+				},
+			],
+		},
+		resolve: {
+			extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.svg']
+		},
+	};
+}
+
+module.exports = [
+  extensionConfig,
+  getWebviewConfig({
+    'webview': './webviews/webview.ts'
+  })
+];

@@ -48,14 +48,14 @@ class MyWebviewViewProvider implements vscode.WebviewViewProvider {
     }
 
     private getHtmlForWebview(webview: vscode.Webview) {
-        const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'webview', 'main.js'));
+        const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'dist', 'webview.js'));
         return `<!DOCTYPE html>
             <html lang="en">
             <head>
                 <title>Title</title>
             </head>
             <body>
-                <h1>Hello World!</h1>
+                <h1>Hello</h1>
             </body>
             <button>I'm a button</button>
             <p>
