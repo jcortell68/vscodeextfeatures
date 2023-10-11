@@ -55,7 +55,7 @@ function getWebviewConfig(entry) {
 	return {
 		name: 'webviews',
 		entry: entry,
-    mode: 'none', // this leaves the source code as close as possible to the original (when packaging we set this to 'production')
+    mode: 'development',
 		target: 'web',
 		devtool: 'source-map',
 		output: {

@@ -56,11 +56,12 @@ class MyWebviewViewProvider implements vscode.WebviewViewProvider {
             </head>
             <body>
                 <h1>Hello</h1>
+                <button>I'm a button</button>
+                <p>
+                <button id='my_button'>I'm another button</button>
+                <div id="app"></div>
+                <script src="${scriptUri}"/>
             </body>
-            <button>I'm a button</button>
-            <p>
-            <button id='my_button'>I'm another button</button>
-            <script src="${scriptUri}"/>
             </html>`;
     }
 }
