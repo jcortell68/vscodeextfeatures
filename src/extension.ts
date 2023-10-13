@@ -49,10 +49,12 @@ class MyWebviewViewProvider implements vscode.WebviewViewProvider {
 
     private getHtmlForWebview(webview: vscode.Webview) {
         const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'dist', 'webview.js'));
+        const cssUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'src', 'styles.css'));
         return `<!DOCTYPE html>
             <html lang="en">
             <head>
                 <title>Title</title>
+                <link rel="stylesheet" href="${cssUri}"/>
             </head>
             <body>
                 <h1>Hello</h1>

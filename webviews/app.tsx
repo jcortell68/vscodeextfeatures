@@ -2,9 +2,23 @@ import { render } from 'react-dom';
 import React from 'react';
 
 export function main() {
-    render(<Hello />, document.getElementById('app'));
+    render(<MyList/>, document.getElementById('app'));
 }
 
-function Hello(props) {
-    return <h1>This text added by a React file (tsx/jsx)!</h1>;
-}
+
+export default function MyList() {
+    const items : React.JSX.Element[] = [];
+
+    for (let i = 0; i < 100; i++) {
+      items.push(<tr>
+          <td key={i}>{`Item ${i}`}</td>
+          </tr>
+      );
+    }
+
+    return (
+      <table>
+        {items}
+      </table>
+    );
+  }
