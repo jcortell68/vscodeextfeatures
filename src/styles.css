@@ -14,3 +14,38 @@ table, th, td {
   border: 1px solid rgb(69, 61, 61);
   border-collapse: collapse;
 }
+
+.query-input {
+  width: 100%;
+  background-color: transparent;
+  min-height: 2em;
+  height: var(--height-before-resize);
+  font-size: inherit;
+  font-family: var(--monospace-font);
+  line-height: 1.2em;
+  padding: 0.5em;
+  overflow: auto;
+  resize: vertical;
+  outline: none;
+}
+
+.query-result-header {
+  display: none;
+  justify-content: space-between;
+  justify-items: start;
+}
+
+.query-result-header-buttons {
+  display: flex;
+  column-gap: 5px;
+}
+
+.query-result-header-button {
+  background-color: transparent;
+  color: var(--vscode-editor-foreground);
+  border: none;
+}
+.query-result-header-button:hover {
+  color: var(--vscode-editorHoverWidget-background);
+  background-color: var(--vscode-editorHoverWidget-foreground);
+}

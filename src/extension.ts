@@ -53,14 +53,9 @@ class MyWebviewViewProvider implements vscode.WebviewViewProvider {
         return `<!DOCTYPE html>
             <html lang="en">
             <head>
-                <title>Title</title>
                 <link rel="stylesheet" href="${cssUri}"/>
             </head>
             <body>
-                <h1>Hello</h1>
-                <button>I'm a button</button>
-                <p>
-                <button id='my_button'>I'm another button</button>
                 <div id="app"></div>
                 <script src="${scriptUri}"/>
             </body>
