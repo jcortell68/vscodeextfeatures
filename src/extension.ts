@@ -50,9 +50,15 @@ class MyWebviewViewProvider implements vscode.WebviewViewProvider {
         webview.onDidReceiveMessage(
             message => {
               switch (message.command) {
-                case 'hello':
-                  console.log('Extension received message from webview');
-                  webview.postMessage({command: 'goodbye'});
+                case 'runQuery':
+                  console.log(`Extension received runQuery request from webview: ${message.query}`);
+
+                  // pretend we ran the query
+
+                  let result: string[][] = [];
+                  result[0] = ['the', 'quick', 'brown'];
+                  result[1] = ['fox', 'jumped', 'high'];
+                  webview.postMessage({command: 'queryResult', result});
                   return;
               }
             },

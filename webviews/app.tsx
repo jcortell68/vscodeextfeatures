@@ -10,8 +10,8 @@ export function main(_vscode: any) {
   window.addEventListener('message', event => {
     const message = event.data; // The JSON data our extension sent
     switch (message.command) {
-        case 'goodbye':
-          console.log('Webview received message from extension');
+        case 'queryResult':
+          console.log(`Webview received message from extension: ${message.result}`);
           break;
     }
   });
@@ -20,7 +20,12 @@ export function main(_vscode: any) {
 }
 
 async function runQuery(query: string) {
-
+  vscode.postMessage(
+    {
+      command: 'runQuery',
+      query
+    }
+  );
 }
 
 export default function MyComponent() {
@@ -28,7 +33,9 @@ export default function MyComponent() {
     function keyDown(event: KeyboardEvent) {
       if (event.ctrlKey && event.key === 'Enter') {
         console.log(`Textarea text is: ${myref.current?.value}`);
-        vscode.postMessage({command: 'hello'});
+        if (myref.current) {
+          runQuery(myref.current.value);
+        }
       }
     }
 
