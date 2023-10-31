@@ -16,5 +16,8 @@ import {main} from './app';
         elem.textContent = "This button's label set by a JavaScript file (*.js) produced by transpiling a TypeScript file (*.ts)";
     }
 
-    addEventListener('load', main);
+    //addEventListener('load', main);
+    addEventListener('load', () => {
+        main(vscode);
+    });
 }());

@@ -1,8 +1,22 @@
 import { render } from 'react-dom';
 import React, { KeyboardEvent, useState, useEffect, useRef } from 'react';
 
-export function main() {
-    render(<MyComponent/>, document.getElementById('app'));
+let vscode: any;
+
+export function main(_vscode: any) {
+  vscode = _vscode;
+
+  // Handle the message inside the webview
+  window.addEventListener('message', event => {
+    const message = event.data; // The JSON data our extension sent
+    switch (message.command) {
+        case 'goodbye':
+          console.log('Webview received message from extension');
+          break;
+    }
+  });
+
+  render(<MyComponent/>, document.getElementById('app'));
 }
 
 async function runQuery(query: string) {
@@ -13,8 +27,8 @@ export default function MyComponent() {
     const myref = useRef<HTMLTextAreaElement>(null);
     function keyDown(event: KeyboardEvent) {
       if (event.ctrlKey && event.key === 'Enter') {
-        console.log(`jjjjjjjjjjjjjjjjjj BOOM`);
-        console.log(myref.current?.value);
+        console.log(`Textarea text is: ${myref.current?.value}`);
+        vscode.postMessage({command: 'hello'});
       }
     }
 

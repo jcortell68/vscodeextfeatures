@@ -21,7 +21,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(disposable);
 
-    disposable = vscode.window.registerWebviewViewProvider('myext_myView', new MyWebviewViewProvider(context.extensionUri));
+    disposable = vscode.window.registerWebviewViewProvider('myext_myView', new MyWebviewViewProvider(context.extensionUri, context.subscriptions));
     context.subscriptions.push(disposable);
 }
 
@@ -29,7 +29,8 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {}
 
 class MyWebviewViewProvider implements vscode.WebviewViewProvider {
-    constructor(private readonly _extensionUri: vscode.Uri) {
+    constructor(private readonly _extensionUri: vscode.Uri,
+        private readonly disposables: vscode.Disposable[]) {
 	}
 
     resolveWebviewView(
@@ -37,14 +38,29 @@ class MyWebviewViewProvider implements vscode.WebviewViewProvider {
         context: vscode.WebviewViewResolveContext<unknown>,
         token: vscode.CancellationToken
     ): void | Thenable<void> {
-        webviewView.webview.options = {
+        const webview = webviewView.webview;
+        webview.options = {
             // Allow scripts in the webview
             enableScripts: true,
 
             localResourceRoots: [this._extensionUri]
         };
 
-        webviewView.webview.html = this.getHtmlForWebview(webviewView.webview);
+        // Handle messages from the webview
+        webview.onDidReceiveMessage(
+            message => {
+              switch (message.command) {
+                case 'hello':
+                  console.log('Extension received message from webview');
+                  webview.postMessage({command: 'goodbye'});
+                  return;
+              }
+            },
+            undefined,
+            this.disposables
+          );
+
+          webview.html = this.getHtmlForWebview(webview);
     }
 
     private getHtmlForWebview(webview: vscode.Webview) {
