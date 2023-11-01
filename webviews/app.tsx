@@ -141,14 +141,18 @@ export default function MyComponent() {
         {!clear && (<div style={{display: 'flex'}} className="query-result-header">
           <span id="msg"></span>
           <span id="result-header" className="query-result-header-buttons">
-            <button className="query-result-header-button">Copy Query</button>
-            {haveData && <button className="query-result-header-button">Copy Result (.tsv)</button>}
+            {haveData && <button className="query-result-header-button">Copy Query</button>}
+            <button className="query-result-header-button">Copy Result (.tsv)</button>
             <button className="query-result-header-button" onClick={onClickClose}>Close</button>
           </span>
         </div>)}
-        <span>Query History ({counter} queries)</span>
-        {haveData && <TableResults tableResults={queryResults}/>}
+        {haveData &&
+        <div>
+          <span>Query results ({queryResults.length} rows)</span>
+          <TableResults tableResults={queryResults}/>
+        </div>}
         {!clear && !haveData && <h1>No results</h1>}
+        <span>Query History ({counter} queries)</span>
       </div>
     );
   }
