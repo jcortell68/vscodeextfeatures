@@ -49,15 +49,27 @@ class MyWebviewViewProvider implements vscode.WebviewViewProvider {
         // Handle messages from the webview
         webview.onDidReceiveMessage(
             message => {
-              switch (message.command) {
+                let result: {}[] = [];
+                switch (message.command) {
                 case 'runQuery':
                   console.log(`Extension received runQuery request from webview: ${message.query}`);
 
                   // pretend we ran the query
+                  if (message.query === 'yankees') {
+                    result[0] = {player: 'Aaron Judge', position: 'RF', games: 106, atBats: 367};
+                    result[1] = {player: 'Gleyber Torres', position: '2B', games: 158, atBats: 596};
+                    result[2] = {player: 'Giancarlo Stanton', position: 'DH', games: 101, atBats: 371};
+                  }
+                  else if (message.query === 'mets') {
+                    result[0] = {player: 'Pete Alonso', position: '1B', games: 154, atBats: 568};
+                    result[1] = {player: 'Franciscon Lindor', position: 'SS', games: 160, atBats: 602};
+                    result[2] = {player: 'Francisco Alvaraz', position: 'C', games: 123, atBats: 382};
+                  }
+                  else {
+                    webview.postMessage({command: 'queryResult', undefined});
+                    return;
+                  }
 
-                  let result: string[][] = [];
-                  result[0] = ['the', 'quick', 'brown'];
-                  result[1] = ['fox', 'jumped', 'high'];
                   webview.postMessage({command: 'queryResult', result});
                   return;
               }

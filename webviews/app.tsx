@@ -51,17 +51,19 @@ export function getCounter(): number {
   return 0;
 }
 
-function useCounter() : number {
+function useCounter() : [number, never[]] {
   const [counter, setCounter] = useState(getCounter()); // jjjjjjjjjjjjj
+  const [queryResults, setQueryResults] = useState([]); // jjjjjjjjjjjjj
 
   useEffect(() => {
     const listener = event => {
       const message = event.data; // The JSON data our extension sent
       switch (message.command) {
           case 'queryResult':
-            console.log(`Webview received message from extension: ${message.result}. counter = ${getCounter()}`);
+            console.log(`Webview received message from extension: ${JSON.stringify(message.result)}. counter = ${getCounter()}`);
             bumpCounter();
             setCounter(getCounter());
+            setQueryResults(message.result);
             break;
       }
     };
@@ -71,13 +73,48 @@ function useCounter() : number {
       window.removeEventListener('message', listener);
     };
   }, []);
-  return counter;
+  return [counter, queryResults];
 }
+
+function TableResults(props: {tableResults: never[]}) {
+  const items: React.JSX.Element[] = [];
+  const firstResult :any = props.tableResults[0];
+  const ths: React.JSX.Element[] = [];
+  for (let prop in firstResult) {
+    if (Object.prototype.hasOwnProperty.call(firstResult, prop)) {
+        ths.push(<th>{prop}</th>);
+    }
+  }
+  items.push(<tr>{ths}</tr>);
+
+  props.tableResults.forEach(element => {
+    const tds: React.JSX.Element[] = [];
+    let obj : any = element;
+    for (let prop in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+        if (typeof element[prop] === 'string') {
+          tds.push(<td>{element[prop]}</td>);
+        } else if (typeof element[prop] === 'number') {
+          let n :number = element[prop];
+          tds.push(<td>{n.toString()}</td>);
+        }
+      }
+    }
+    if (element['player'] && element['position']) {
+      items.push(<tr>{tds}</tr>);
+    }
+  });
+  return (<table>
+    {items}
+  </table>);
+}
+
 export default function MyComponent() {
-    console.log('MyComponent created');
     const myref = useRef<HTMLTextAreaElement>(null);
-    const counter = useCounter();
-    console.log(`counter = ${counter}`);
+    const [counter, queryResults] = useCounter();
+
+    console.log('MyComponent created');
+    console.log(`query results= ${JSON.stringify(queryResults)}`);
 
     function keyDown(event: KeyboardEvent) {
       if (event.ctrlKey && event.key === 'Enter') {
@@ -102,8 +139,8 @@ export default function MyComponent() {
           </span>
         </div>
         <span>Query History ({counter} queries)</span>
-        <table id="results">
-        </table>
+        {!!queryResults && <TableResults tableResults={queryResults}/>}
+        {!queryResults && <h1>No results</h1>}
       </div>
     );
   }
