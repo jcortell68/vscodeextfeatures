@@ -51,7 +51,7 @@ export function getCounter(): number {
   return 0;
 }
 
-function useCounter() : [number, never[]] {
+function useCounter() : [number, React.Dispatch<React.SetStateAction<number>>, never[], React.Dispatch<React.SetStateAction<never[]>>] {
   const [counter, setCounter] = useState(getCounter()); // jjjjjjjjjjjjj
   const [queryResults, setQueryResults] = useState([]); // jjjjjjjjjjjjj
 
@@ -63,7 +63,7 @@ function useCounter() : [number, never[]] {
             console.log(`Webview received message from extension: ${JSON.stringify(message.result)}. counter = ${getCounter()}`);
             bumpCounter();
             setCounter(getCounter());
-            setQueryResults(message.result);
+            setQueryResults(message.result ?? []);
             break;
       }
     };
@@ -73,7 +73,7 @@ function useCounter() : [number, never[]] {
       window.removeEventListener('message', listener);
     };
   }, []);
-  return [counter, queryResults];
+  return [counter, setCounter, queryResults, setQueryResults];
 }
 
 function TableResults(props: {tableResults: never[]}) {
@@ -111,7 +111,8 @@ function TableResults(props: {tableResults: never[]}) {
 
 export default function MyComponent() {
     const myref = useRef<HTMLTextAreaElement>(null);
-    const [counter, queryResults] = useCounter();
+    const [counter, setCounter, queryResults, setQueryResults] = useCounter();
+    const [clear, setClear] = useState(true);
 
     console.log('MyComponent created');
     console.log(`query results= ${JSON.stringify(queryResults)}`);
@@ -120,27 +121,34 @@ export default function MyComponent() {
       if (event.ctrlKey && event.key === 'Enter') {
         console.log(`Textarea text is: ${myref.current?.value}`);
         if (myref.current) {
+          setClear(false);
           runQuery(myref.current.value);
         }
       }
     }
 
-   const [isShown, setIsShown] = useState(false);
+    function onClickClose() {
+      setQueryResults([]);
+      setClear(true);
+    }
+
+
+   const haveData = queryResults.length !== 0;
 
     return (
       <div>
         <textarea className="query-input" placeholder="Enter query and press Cmd/Ctrl + Enter" rows={5} onKeyDown={keyDown} ref={myref}></textarea>
-        <div style={{display: isShown ? 'flex' : 'none'}} className="query-result-header">
+        {!clear && (<div style={{display: 'flex'}} className="query-result-header">
           <span id="msg"></span>
           <span id="result-header" className="query-result-header-buttons">
             <button className="query-result-header-button">Copy Query</button>
-            <button className="query-result-header-button">Copy Result (.tsv)</button>
-            <button className="query-result-header-button">Close</button>
+            {haveData && <button className="query-result-header-button">Copy Result (.tsv)</button>}
+            <button className="query-result-header-button" onClick={onClickClose}>Close</button>
           </span>
-        </div>
+        </div>)}
         <span>Query History ({counter} queries)</span>
-        {!!queryResults && <TableResults tableResults={queryResults}/>}
-        {!queryResults && <h1>No results</h1>}
+        {haveData && <TableResults tableResults={queryResults}/>}
+        {!clear && !haveData && <h1>No results</h1>}
       </div>
     );
   }
