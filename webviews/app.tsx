@@ -109,10 +109,19 @@ function TableResults(props: {tableResults: never[]}) {
   </table>);
 }
 
+function QueryList(props: {queries: never[]}) {
+  const items: React.JSX.Element[] = [];
+  props.queries.forEach(element => {
+    items.push(<div className='history-item'><pre>{element}</pre></div>);
+  });
+  return(<div>{items}</div>);
+}
+
 export default function MyComponent() {
     const myref = useRef<HTMLTextAreaElement>(null);
     const [counter, setCounter, queryResults, setQueryResults] = useCounter();
     const [clear, setClear] = useState(true);
+    const [queryHistory, setQueryHistory] = useState([]);
 
     console.log('MyComponent created');
     console.log(`query results= ${JSON.stringify(queryResults)}`);
@@ -123,6 +132,7 @@ export default function MyComponent() {
         if (myref.current) {
           setClear(false);
           runQuery(myref.current.value);
+          setQueryHistory([...queryHistory, myref.current.value as never]);
         }
       }
     }
@@ -152,7 +162,8 @@ export default function MyComponent() {
           <TableResults tableResults={queryResults}/>
         </div>}
         {!clear && !haveData && <h1>No results</h1>}
-        <span>Query History ({counter} queries)</span>
+        <header className='history'>Query History ({counter} queries)</header>
+        {queryHistory.length !== 0 && <div><QueryList queries={queryHistory}/></div>}
       </div>
     );
   }

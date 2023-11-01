@@ -49,3 +49,17 @@ table, th, td {
   color: var(--vscode-editorHoverWidget-background);
   background-color: var(--vscode-editorHoverWidget-foreground);
 }
+
+.history {
+  background-color: lightgray;
+  display: flex;
+  padding: 4px 10px;
+  vertical-align: middle;
+  border-color: gray;
+  border-style: solid;
+  border-width: 1px 1px;
+}
+
+.history-item {
+  border-bottom: 1px solid gray
+}
