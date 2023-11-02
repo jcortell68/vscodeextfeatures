@@ -1,5 +1,6 @@
 import { render } from 'react-dom';
 import React, { KeyboardEvent, useState, useEffect, useRef } from 'react';
+import {QueryResult} from '../src/extension';
 
 let vscode: any;
 
@@ -51,19 +52,24 @@ export function getCounter(): number {
   return 0;
 }
 
-function useCounter() : [number, React.Dispatch<React.SetStateAction<number>>, never[], React.Dispatch<React.SetStateAction<never[]>>] {
+const qrNull: QueryResult = {
+  data: [],
+  error: undefined
+};
+
+function useCounter() : [number, React.Dispatch<React.SetStateAction<number>>, QueryResult, React.Dispatch<React.SetStateAction<QueryResult>>] {
   const [counter, setCounter] = useState(getCounter()); // jjjjjjjjjjjjj
-  const [queryResults, setQueryResults] = useState([]); // jjjjjjjjjjjjj
+  const [queryResults, setQueryResults] = useState(qrNull); // jjjjjjjjjjjjj
 
   useEffect(() => {
     const listener = event => {
       const message = event.data; // The JSON data our extension sent
       switch (message.command) {
           case 'queryResult':
-            console.log(`Webview received message from extension: ${JSON.stringify(message.result)}. counter = ${getCounter()}`);
+            console.log(`Webview received message from extension}`);
             bumpCounter();
             setCounter(getCounter());
-            setQueryResults(message.result ?? []);
+            setQueryResults(message.result);
             break;
       }
     };
@@ -76,7 +82,7 @@ function useCounter() : [number, React.Dispatch<React.SetStateAction<number>>, n
   return [counter, setCounter, queryResults, setQueryResults];
 }
 
-function TableResults(props: {tableResults: never[]}) {
+function TableResults(props: {tableResults: QueryResult}) {
   const items: React.JSX.Element[] = [];
   const firstResult :any = props.tableResults[0];
   const ths: React.JSX.Element[] = [];
@@ -87,7 +93,7 @@ function TableResults(props: {tableResults: never[]}) {
   }
   items.push(<tr>{ths}</tr>);
 
-  props.tableResults.forEach(element => {
+  props.tableResults.data.forEach(element => {
     const tds: React.JSX.Element[] = [];
     let obj : any = element;
     for (let prop in obj) {
@@ -117,14 +123,40 @@ function QueryList(props: {queries: never[]}) {
   return(<div>{items}</div>);
 }
 
+function QueryResults(props: {queryStr: string | undefined, result: QueryResult, onClickClose: ()=>void}) {
+  let rowsLine = !props.result.error ? `${props.result.data.length} rows` : 'error';
+
+  const queryStr = props.queryStr?? '';
+
+  return(<div>
+
+    {(
+      <section>
+        <header className='sql-header-bar'>
+          <h1 className='sql-header-title'>Query result ({rowsLine}) - 123ms</h1>
+          <span className='sql-header-description'>{queryStr}</span>
+          <span className="sql-header-buttons">
+            <button className="sql-header-button">Copy Query</button>
+            {props.result.data.length !== 0 && <button className="sql-header-button">Copy Result (.tsv)</button>}
+            <button className="sql-header-button" onClick={props.onClickClose}>Close</button>
+          </span>
+        </header>
+        {!props.result.error && <TableResults tableResults={props.result}/>}
+        {!!props.result.error && <article><div className='sql-error'>{props.result.error}</div></article>}
+
+      </section>)}
+
+  </div>);
+}
+
 export default function MyComponent() {
     const myref = useRef<HTMLTextAreaElement>(null);
-    const [counter, setCounter, queryResults, setQueryResults] = useCounter();
+    const [counter, setCounter, queryResult, setQueryResults] = useCounter();
     const [clear, setClear] = useState(true);
     const [queryHistory, setQueryHistory] = useState([]);
 
     console.log('MyComponent created');
-    console.log(`query results= ${JSON.stringify(queryResults)}`);
+    console.log(`query results= ${JSON.stringify(queryResult)}`);
 
     function keyDown(event: KeyboardEvent) {
       if (event.ctrlKey && event.key === 'Enter') {
@@ -132,36 +164,23 @@ export default function MyComponent() {
         if (myref.current) {
           setClear(false);
           runQuery(myref.current.value);
-          setQueryHistory([...queryHistory, myref.current.value as never]);
+          setQueryHistory([myref.current.value as never, ...Array.from(queryHistory).reverse()]);
         }
       }
     }
 
     function onClickClose() {
-      setQueryResults([]);
+      setQueryResults(qrNull);
       setClear(true);
     }
 
 
-   const haveData = queryResults.length !== 0;
+   const haveData = queryResult.data.length !== 0;
 
     return (
       <div>
-        <textarea className="query-input" placeholder="Enter query and press Cmd/Ctrl + Enter" rows={5} onKeyDown={keyDown} ref={myref}></textarea>
-        {!clear && (<div style={{display: 'flex'}} className="query-result-header">
-          <span id="msg"></span>
-          <span id="result-header" className="query-result-header-buttons">
-            {haveData && <button className="query-result-header-button">Copy Query</button>}
-            <button className="query-result-header-button">Copy Result (.tsv)</button>
-            <button className="query-result-header-button" onClick={onClickClose}>Close</button>
-          </span>
-        </div>)}
-        {haveData &&
-        <div>
-          <span>Query results ({queryResults.length} rows)</span>
-          <TableResults tableResults={queryResults}/>
-        </div>}
-        {!clear && !haveData && <h1>No results</h1>}
+        <textarea className="sql-enter-query" placeholder="Enter query and press Cmd/Ctrl + Enter" rows={5} onKeyDown={keyDown} ref={myref}></textarea>
+        {!clear && <QueryResults queryStr={myref.current?.value} result={queryResult} onClickClose={onClickClose}/>}
         <header className='history'>Query History ({counter} queries)</header>
         {queryHistory.length !== 0 && <div><QueryList queries={queryHistory}/></div>}
       </div>

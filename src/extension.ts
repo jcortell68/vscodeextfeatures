@@ -28,6 +28,11 @@ export function activate(context: vscode.ExtensionContext) {
 // This method is called when your extension is deactivated
 export function deactivate() {}
 
+export interface QueryResult {
+    data: {}[],
+    error: undefined | string
+}
+
 class MyWebviewViewProvider implements vscode.WebviewViewProvider {
     constructor(private readonly _extensionUri: vscode.Uri,
         private readonly disposables: vscode.Disposable[]) {
@@ -49,24 +54,29 @@ class MyWebviewViewProvider implements vscode.WebviewViewProvider {
         // Handle messages from the webview
         webview.onDidReceiveMessage(
             message => {
-                let result: {}[] = [];
+                let data: {}[] = [];
+                let result: QueryResult = {
+                    data,
+                    error: undefined
+                };
                 switch (message.command) {
                 case 'runQuery':
                   console.log(`Extension received runQuery request from webview: ${message.query}`);
 
                   // pretend we ran the query
                   if (message.query === 'yankees') {
-                    result[0] = {player: 'Aaron Judge', position: 'RF', games: 106, atBats: 367};
-                    result[1] = {player: 'Gleyber Torres', position: '2B', games: 158, atBats: 596};
-                    result[2] = {player: 'Giancarlo Stanton', position: 'DH', games: 101, atBats: 371};
+                    data[0] = {player: 'Aaron Judge', position: 'RF', games: 106, atBats: 367};
+                    data[1] = {player: 'Gleyber Torres', position: '2B', games: 158, atBats: 596};
+                    data[2] = {player: 'Giancarlo Stanton', position: 'DH', games: 101, atBats: 371};
                   }
                   else if (message.query === 'mets') {
-                    result[0] = {player: 'Pete Alonso', position: '1B', games: 154, atBats: 568};
-                    result[1] = {player: 'Franciscon Lindor', position: 'SS', games: 160, atBats: 602};
-                    result[2] = {player: 'Francisco Alvaraz', position: 'C', games: 123, atBats: 382};
+                    data[0] = {player: 'Pete Alonso', position: '1B', games: 154, atBats: 568};
+                    data[1] = {player: 'Franciscon Lindor', position: 'SS', games: 160, atBats: 602};
+                    data[2] = {player: 'Francisco Alvaraz', position: 'C', games: 123, atBats: 382};
                   }
                   else {
-                    webview.postMessage({command: 'queryResult', undefined});
+                    result.error = 'Invalid query';
+                    webview.postMessage({command: 'queryResult', result});
                     return;
                   }
 
