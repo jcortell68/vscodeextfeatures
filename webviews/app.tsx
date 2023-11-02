@@ -83,16 +83,17 @@ function useCounter() : [number, React.Dispatch<React.SetStateAction<number>>, Q
 }
 
 function TableResults(props: {tableResults: QueryResult}) {
-  const items: React.JSX.Element[] = [];
-  const firstResult :any = props.tableResults[0];
+  const itemsHead: React.JSX.Element[] = [];
+  const firstResult :any = props.tableResults.data[0];
   const ths: React.JSX.Element[] = [];
   for (let prop in firstResult) {
     if (Object.prototype.hasOwnProperty.call(firstResult, prop)) {
-        ths.push(<th>{prop}</th>);
+        ths.push(<td>{prop}</td>);
     }
   }
-  items.push(<tr>{ths}</tr>);
+  itemsHead.push(<tr>{ths}</tr>);
 
+  const itemsBody: React.JSX.Element[] = [];
   props.tableResults.data.forEach(element => {
     const tds: React.JSX.Element[] = [];
     let obj : any = element;
@@ -107,11 +108,13 @@ function TableResults(props: {tableResults: QueryResult}) {
       }
     }
     if (element['player'] && element['position']) {
-      items.push(<tr>{tds}</tr>);
+      itemsBody.push(<tr>{tds}</tr>);
     }
   });
-  return (<table>
-    {items}
+  return (<table className='sql-table'>
+    <thead>{itemsHead}</thead>
+    <tbody>{itemsBody}</tbody>
+
   </table>);
 }
 
@@ -141,8 +144,12 @@ function QueryResults(props: {queryStr: string | undefined, result: QueryResult,
             <button className="sql-header-button" onClick={props.onClickClose}>Close</button>
           </span>
         </header>
-        {!props.result.error && <TableResults tableResults={props.result}/>}
-        {!!props.result.error && <article><div className='sql-error'>{props.result.error}</div></article>}
+        <article className='sql-content'>
+          <div className='sql-panel'>
+          {!!props.result.error && <div className='sql-error'>{props.result.error}</div>}
+          {!props.result.error && <TableResults tableResults={props.result}/>}
+          </div>
+        </article>
 
       </section>)}
 
@@ -163,8 +170,16 @@ export default function MyComponent() {
         console.log(`Textarea text is: ${myref.current?.value}`);
         if (myref.current) {
           setClear(false);
-          runQuery(myref.current.value);
-          setQueryHistory([myref.current.value as never, ...Array.from(queryHistory).reverse()]);
+          const queryStr = myref.current.value.trim();
+          runQuery(queryStr);
+          if (queryHistory.length !== 0) {
+            if (queryHistory[0] !== queryStr) {
+              setQueryHistory([queryStr as never, ...queryHistory]);
+            }
+          }
+          else {
+            setQueryHistory([queryStr as never]);
+          }
         }
       }
     }
@@ -181,7 +196,7 @@ export default function MyComponent() {
       <div>
         <textarea className="sql-enter-query" placeholder="Enter query and press Cmd/Ctrl + Enter" rows={5} onKeyDown={keyDown} ref={myref}></textarea>
         {!clear && <QueryResults queryStr={myref.current?.value} result={queryResult} onClickClose={onClickClose}/>}
-        <header className='history'>Query History ({counter} queries)</header>
+        <header className='history'>Query History ({queryHistory.length} queries)</header>
         {queryHistory.length !== 0 && <div><QueryList queries={queryHistory}/></div>}
       </div>
     );

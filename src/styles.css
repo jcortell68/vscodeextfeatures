@@ -150,6 +150,35 @@ table, th, td {
   border-width: 1px 1px;
 }
 
+.sql-content {
+  font-size: smaller;
+  flex-grow: 1;
+  font-weight: 300;
+  overflow-x: auto;
+}
+
+.sql-panel {
+  display: contents;
+}
+
+.sql-table {
+  min-width: 100%;
+  font-size: 14px;
+  border: 0;
+  thead td {
+    position: sticky;
+    top: 0;
+    background-color: hsl(214, 22%, 90%);
+    color: #262f3c;
+    text-align: center;
+    padding: 1px 3px;
+    border-style: solid;
+    border-color: #fff;
+    border-right-width: 1px;
+    border-left-width: 1px;
+  }
+}
+
 .history-item {
   border-bottom: 1px solid gray
 }

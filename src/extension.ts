@@ -63,6 +63,7 @@ class MyWebviewViewProvider implements vscode.WebviewViewProvider {
                 case 'runQuery':
                   console.log(`Extension received runQuery request from webview: ${message.query}`);
 
+                  console.log(`jjj message.query=${message.query}`);
                   // pretend we ran the query
                   if (message.query === 'yankees') {
                     data[0] = {player: 'Aaron Judge', position: 'RF', games: 106, atBats: 367};
