@@ -121,7 +121,7 @@ function TableResults(props: {tableResults: QueryResult}) {
 function QueryList(props: {queries: never[]}) {
   const items: React.JSX.Element[] = [];
   props.queries.forEach(element => {
-    items.push(<div className='history-item'><pre>{element}</pre></div>);
+    items.push(<div className='sql-history-item'><pre>{element}</pre></div>);
   });
   return(<div>{items}</div>);
 }
@@ -196,8 +196,10 @@ export default function MyComponent() {
       <div>
         <textarea className="sql-enter-query" placeholder="Enter query and press Cmd/Ctrl + Enter" rows={5} onKeyDown={keyDown} ref={myref}></textarea>
         {!clear && <QueryResults queryStr={myref.current?.value} result={queryResult} onClickClose={onClickClose}/>}
-        <header className='history'>Query History ({queryHistory.length} queries)</header>
-        {queryHistory.length !== 0 && <div><QueryList queries={queryHistory}/></div>}
+        <div>
+          <header className='sql-overview'>Query History ({queryHistory.length} queries)</header>
+          {queryHistory.length !== 0 && <div><QueryList queries={queryHistory}/></div>}
+        </div>
       </div>
     );
   }
