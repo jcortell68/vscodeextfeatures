@@ -7,16 +7,6 @@ let vscode: any;
 export function main(_vscode: any) {
   vscode = _vscode;
 
-  // // Handle the message inside the webview
-  // window.addEventListener('message', event => {
-  //   const message = event.data; // The JSON data our extension sent
-  //   switch (message.command) {
-  //       case 'queryResult':
-  //         console.log(`Webview received message from extension: ${message.result}`);
-  //         break;
-  //   }
-  // });
-
   render(<MyComponent/>, document.getElementById('app'));
 }
 
@@ -137,7 +127,7 @@ function QueryResults(props: {queryStr: string | undefined, result: QueryResult,
       <section>
         <header className='sql-header-bar'>
           <h1 className='sql-header-title'>Query result ({rowsLine}) - 123ms</h1>
-          <span className='sql-header-description'>{queryStr}</span>
+          <span className='sql-header-querystr'>query={queryStr}</span>
           <span className="sql-header-buttons">
             <button className="sql-header-button">Copy Query</button>
             {props.result.data.length !== 0 && <button className="sql-header-button">Copy Result (.tsv)</button>}
@@ -146,8 +136,8 @@ function QueryResults(props: {queryStr: string | undefined, result: QueryResult,
         </header>
         <article className='sql-content'>
           <div className='sql-panel'>
-          {!!props.result.error && <div className='sql-error'>{props.result.error}</div>}
-          {!props.result.error && <TableResults tableResults={props.result}/>}
+            {!!props.result.error && <div className='sql-error'>{props.result.error}</div>}
+            {!props.result.error && <TableResults tableResults={props.result}/>}
           </div>
         </article>
 
@@ -195,9 +185,11 @@ export default function MyComponent() {
     return (
       <div>
         <textarea className="sql-enter-query" placeholder="Enter query and press Cmd/Ctrl + Enter" rows={5} onKeyDown={keyDown} ref={myref}></textarea>
+
         {!clear && <QueryResults queryStr={myref.current?.value} result={queryResult} onClickClose={onClickClose}/>}
+
         <div>
-          <header className='sql-overview'>Query History ({queryHistory.length} queries)</header>
+          <header className='sql-history-header'>Query History ({queryHistory.length} queries)</header>
           {queryHistory.length !== 0 && <div><QueryList queries={queryHistory}/></div>}
         </div>
       </div>
