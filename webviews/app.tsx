@@ -126,7 +126,7 @@ function QueryResults(props: {queryStr: string | undefined, result: QueryResult,
     {(
       <section>
         <header className='sql-header-bar'>
-          <h1 className='sql-header-title'>Query result ({rowsLine}) - 123ms</h1>
+          <h1 className='sql-header-title'>Query Result ({rowsLine}) - 123ms</h1>
           <span className='sql-header-querystr'>query={queryStr}</span>
           <span className="sql-header-buttons">
             <button className="sql-header-button">Copy Query</button>
@@ -140,7 +140,7 @@ function QueryResults(props: {queryStr: string | undefined, result: QueryResult,
             {!props.result.error && <TableResults tableResults={props.result}/>}
           </div>
         </article>
-
+        <div className="sql-post-table-pading"></div>
       </section>)}
 
   </div>);
@@ -185,9 +185,7 @@ export default function MyComponent() {
     return (
       <div>
         <textarea className="sql-enter-query" placeholder="Enter query and press Cmd/Ctrl + Enter" rows={5} onKeyDown={keyDown} ref={myref}></textarea>
-
         {!clear && <QueryResults queryStr={myref.current?.value} result={queryResult} onClickClose={onClickClose}/>}
-
         <div>
           <header className='sql-history-header'>Query History ({queryHistory.length} queries)</header>
           {queryHistory.length !== 0 && <div><QueryList queries={queryHistory}/></div>}

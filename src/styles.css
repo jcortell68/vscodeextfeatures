@@ -172,3 +172,7 @@
   margin: 0;
   overflow-x: auto;
 }
+
+.sql-post-table-pading {
+  padding: 10px
+}
