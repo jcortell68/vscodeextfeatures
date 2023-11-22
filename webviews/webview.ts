@@ -11,10 +11,5 @@ const vscode = acquireVsCodeApi();
 import {main} from './app';
 
 (function () {
-    const elem = document.getElementById('my_button');
-    if (elem) {
-        elem.textContent = "This button's label set by a JavaScript file (*.js) produced by transpiling a TypeScript file (*.ts)";
-    }
-
     addEventListener('load', main);
 }());
