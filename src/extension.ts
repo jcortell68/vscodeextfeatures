@@ -48,14 +48,36 @@ class MyWebviewViewProvider implements vscode.WebviewViewProvider {
     }
 
     private getHtmlForWebview() {
-        return `<!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <title>Title</title>
-            </head>
-            <body>
-                <h1>Hello World!</h1>
-            </body>
-            </html>`;
+        return `<script>
+        function myHandler() {
+          let counter = 0;
+          let setting = window.sessionStorage.getItem('counter');
+          if (setting) {
+            counter = Number(setting);
+          }
+          counter++;
+          window.sessionStorage.setItem('counter', counter);
+          console.log(\`session counter = \${String(counter)}\`);
+          document.getElementById("session").textContent=\`sessionStorage counter=\${counter}\`;
+
+          counter = 0;
+          setting = window.localStorage.getItem('counter');
+          if (setting) {
+            counter = Number(setting);
+          }
+          counter++;
+          window.localStorage.setItem('counter', counter);
+          console.log(\`local counter = \${String(counter)}\`);
+          document.getElementById("local").textContent=\`localStorage counter=\${counter}\`;
+
+        }
+        </script>
+
+        <button onClick="myHandler()">
+        Increment Counters
+        </button>
+        <p id="session"/>
+        <p id="local"/>
+        `;
     }
 }
